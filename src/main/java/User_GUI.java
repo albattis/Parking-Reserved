@@ -17,6 +17,8 @@ public class User_GUI implements ActionListener {
     private static final DateTime DT=new DateTime();
     private static final GuiElements Elements=new GuiElements();
     private static final Room Rooms=new Room();
+    private static final Database DB=new Database();
+    private static final DatabaseQuerys q=new DatabaseQuerys();
     int roomnumber;
 
 
@@ -67,6 +69,10 @@ public class User_GUI implements ActionListener {
         Elements.RoomReservedPanel.add(Elements.Room_Reserved);
         Elements.Room_Reserved.addActionListener(new User_GUI());
 
+        Elements.Back.setBounds(150,400,150,30);
+        Elements.RoomReservedPanel.add(Elements.Back);
+        Elements.Back.addActionListener(new User_GUI());
+
         Elements.RoomReservedFrame.setVisible(true);
     }
 
@@ -77,6 +83,7 @@ public class User_GUI implements ActionListener {
         CompUs.Password=pass;
         CompUs.ContactPerson=login[3];
         CompUs.ContactPhone=login[4];
+        Rp.Parking= DB.SQLConnectionParking(q.ParkingQuery);
         UserScreen();
 
     }
@@ -174,6 +181,10 @@ public class User_GUI implements ActionListener {
         Elements.LoginPanel.add(Elements.reserved_button);
         Elements.reserved_button.addActionListener(new User_GUI());
 
+        Elements.Back.setBounds(350,400,150,30);
+        Elements.LoginPanel.add(Elements.Back);
+        Elements.Back.addActionListener(new User_GUI());
+
 
         Elements.LoginFrame.setVisible(true);
     }
@@ -215,9 +226,12 @@ public class User_GUI implements ActionListener {
            }
            if(id==2)
            {
-               System.out.println(id);
                if (DataChecksDate()&&DataChecksTime()&&Rp.Parking_Full()){
                data=true;}
+           }
+           if(id==3)
+           {
+               if(DataChecksDate()&&DataChecksTime()){data=true;}
            }
 
        }
@@ -248,7 +262,10 @@ public class User_GUI implements ActionListener {
 
             }
 
-
+            if(e.getSource()==Elements.Back)
+            {
+                UserScreen();
+            }
 
 
             if (e.getSource() == Elements.Room_Reserved) {
@@ -278,10 +295,13 @@ public class User_GUI implements ActionListener {
                     }
 
             if (e.getSource() == Elements.Parking_Check) {
+                    if(DataCheck(3)) {
 
-                     int Pcheck = Rp.Parking_Status();
-                    Elements.Parking_Return.setText("Szabad Parkolóhelyek száma: " + Pcheck);
-
+                        int Pcheck = Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText());
+                        Elements.Parking_Return.setText("Szabad Parkolóhelyek száma: " + Pcheck);
+                    }else {
+                        System.out.println("nem nem");
+                    }
                      }
 
             if(e.getSource()==Elements.Parking){

@@ -1,21 +1,20 @@
-import java.sql.Time;
+import javax.lang.model.util.Elements;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 public interface IParking {
 
-
-
     boolean Parking_Full();
-    int Parking_Status();
+    int Parking_Status(String date,String time) throws SQLException;
 
 }
 class Parkings implements IParking {
-    int Parking = 70;
+    int Parking = 0;
     int Aktual_Parking_status_Guest = 0;
-    int Parking_to_Guest = 50;
+    int Parking_to_Guest;
     String Warning = "Csak egy órára foglalható parkolóhely az irodaházban";
+    Database DB=new Database();
     ErrorMessage Error=new ErrorMessage();
 
     public Parkings() {
@@ -26,15 +25,14 @@ class Parkings implements IParking {
     @Override
     public boolean Parking_Full() {
         boolean akt = false;
-        akt = Aktual_Parking_status_Guest < Parking_to_Guest;
-        System.out.println(akt);
         return akt;
     }
 
 
     @Override
-    public int Parking_Status() {
-        return (Parking_to_Guest - Aktual_Parking_status_Guest);
+    public int Parking_Status(String date,String time){
+        String query="SELECT count(date) from parking_reserver where date=\""+date+"\" and time=\""+time+"\"";
+        return DB.SQLConnectionParking(query);
     }
 
 

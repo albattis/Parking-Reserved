@@ -23,11 +23,9 @@ class Login_Controll implements ILogin_Controll {
     public Login_Controll(){}
     public String[] Login_Controlls(String name, String pass){
 
-
         Username = name;
         Password = pass;
         return Password_Controll();
-
 
     }
 
@@ -39,7 +37,6 @@ class Login_Controll implements ILogin_Controll {
         String[] s=new String[5];
 
         try{ s=DB.SQLConnection(query); }catch (Exception e){System.out.println(e.getMessage());}
-
         returndata=sec.equals(s[2]);
         return s;
     }

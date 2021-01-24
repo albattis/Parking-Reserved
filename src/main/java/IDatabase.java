@@ -41,4 +41,20 @@ class Database implements IDatabase
         return k;
 
         }
+        public int SQLConnectionParking(String sql) {
+            int result = 0;
+        try {
+
+            JDBCConnect();
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/parking_reserved", "root", "");
+            PreparedStatement statemant = (PreparedStatement) connection.prepareStatement(sql);
+            ResultSet rs = statemant.executeQuery();
+            while (rs.next()) {
+                result = Integer.parseInt(rs.getString(1));
+            }
+        }catch (SQLException e){
+            System.out.println("Sikertelen eredmény");
+        }
+            return result;
+        }
 }
