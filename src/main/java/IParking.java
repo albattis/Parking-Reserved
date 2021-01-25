@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 public interface IParking {
 
-    boolean Parking_Full();
+
     int Parking_Status(String date,String time) throws SQLException;
 
 }
@@ -22,24 +22,19 @@ class Parkings implements IParking {
     }
 
 
-    @Override
-    public boolean Parking_Full() {
-        boolean akt = false;
-        return akt;
-    }
-
 
     @Override
     public int Parking_Status(String date,String time){
-        String query="SELECT count(date) from parking_reserver where date=\""+date+"\" and time=\""+time+"\"";
+        String query="SELECT count(date) from parking_reserved where date=\""+date+"\" and time=\""+time+"\"";
         return DB.SQLConnectionParking(query);
     }
 
 
-    public void Reserved_Parkings(LocalDate Day, LocalTime time, int identy, String company, String contact, String contact_phone) {
+    public void Reserved_Parkings(LocalDate Day, LocalTime time, int identy) {
 
-        if (Parking_Full()) {
-            //adatbázisba beszurás
+        if (Parking_Status(Day.toString(),time.toString())<Parking_to_Guest) {
+            String query="insert into parking_reserved(`userid`,`date`,`time`)values("+identy+",\""+Day+"\",\""+time+"\");";
+            DB.SQLInsertParking(query);
             Error.Error("Sikeres Parkolóhelyfoglalás","A Parkolót sikeresen lefoglalta");
         } else {
             Error.Error("ParkolóHely foglalás","Nincs elegendö parkolóhely");

@@ -84,6 +84,7 @@ public class User_GUI implements ActionListener {
         CompUs.ContactPerson=login[3];
         CompUs.ContactPhone=login[4];
         Rp.Parking= DB.SQLConnectionParking(q.ParkingQuery);
+        Rp.Parking_to_Guest=DB.SQLConnectionParking(q.ParkingQuery);
         UserScreen();
 
     }
@@ -220,21 +221,20 @@ public class User_GUI implements ActionListener {
 
     public boolean DataCheck(int id){
         data=false;
-       if(id==1) {
-           if (DataChecksDate() && DataChecksTime() && Rooms.Room_Free(roomnumber)&&DataChecksRoom()) {
-               data = true;
-           }
-           if(id==2)
+            if(id==1) {
+                if (DataChecksDate() && DataChecksTime() && Rooms.Room_Free(roomnumber) && DataChecksRoom()) {
+                    data = true;
+                }
+            }
+            if(id==2)
            {
-               if (DataChecksDate()&&DataChecksTime()&&Rp.Parking_Full()){
+               if (DataChecksDate()&&DataChecksTime()&&(Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText()))< Rp.Parking_to_Guest){
                data=true;}
            }
            if(id==3)
            {
                if(DataChecksDate()&&DataChecksTime()){data=true;}
            }
-
-       }
        return data;
     }
 
@@ -284,7 +284,7 @@ public class User_GUI implements ActionListener {
             if (e.getSource() == Elements.reserved_button){
                      if(DataCheck(2))
                         {
-                            Rp.Reserved_Parkings(date,time,CompUs.UserId,CompUs.CompanyName,CompUs.ContactPerson,CompUs.ContactPhone);
+                            Rp.Reserved_Parkings(date,time,CompUs.UserId);
 
                         Elements.LoginPanel.setVisible(false);
                         UserScreen();
@@ -298,14 +298,14 @@ public class User_GUI implements ActionListener {
                     if(DataCheck(3)) {
 
                         int Pcheck = Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText());
-                        Elements.Parking_Return.setText("Szabad Parkolóhelyek száma: " + Pcheck);
+                        Elements.Parking_Return.setText("Szabad Parkolóhelyek száma: " + (Rp.Parking_to_Guest-Pcheck));
+
                     }else {
                         System.out.println("nem nem");
                     }
                      }
 
             if(e.getSource()==Elements.Parking){
-                System.out.println( "a");
                 Elements.ChoiceFrame.setVisible(false);
                 UserBoard_Selected();}
 

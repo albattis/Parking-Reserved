@@ -57,4 +57,19 @@ class Database implements IDatabase
         }
             return result;
         }
+
+    public void SQLInsertParking(String sql) {
+        try {
+
+            JDBCConnect();
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/parking_reserved", "root", "");
+            Statement statemant = connection.createStatement();
+           statemant.executeUpdate(sql);
+
+
+        }catch (SQLException e){
+
+        }
+
+    }
 }
