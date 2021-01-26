@@ -30,10 +30,10 @@ class Parkings implements IParking {
     }
 
 
-    public void Reserved_Parkings(LocalDate Day, LocalTime time, int identy) {
+    public void Reserved_Parkings(LocalDate Day, LocalTime time, int identy,String registr) {
 
         if (Parking_Status(Day.toString(),time.toString())<Parking_to_Guest) {
-            String query="insert into parking_reserved(`userid`,`date`,`time`)values("+identy+",\""+Day+"\",\""+time+"\");";
+            String query="insert into parking_reserved(`userid`,`date`,`time`,`Registration_number`)values("+identy+",\""+Day+"\",\""+time+"\",\""+registr+"\");";
             DB.SQLInsertParking(query);
             Error.Error("Sikeres Parkolóhelyfoglalás","A Parkolót sikeresen lefoglalta");
         } else {

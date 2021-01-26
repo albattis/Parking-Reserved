@@ -37,12 +37,13 @@ public class GuiElements {
         JLabel Parking_Date=new JLabel("Aja meg a Dátumot: ");
         JLabel Room_Check_Text=new JLabel("Terem Ellenörzése:");
         JLabel Room_Number = new JLabel("Terem száma:");
-
+        JLabel RegistrationNumber=new JLabel("Autó Rendszáma:");
 
         JTextField Number_Text = new JTextField();
         JTextField Date_Text= new JTextField();
         JTextField TextField_one= new JTextField();
         JTextField Time_Text=new JTextField();
+        JTextField RegistrationNumber_Text=new JTextField();
 
         JPasswordField passwordField = new JPasswordField();
 

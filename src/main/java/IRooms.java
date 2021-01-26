@@ -5,22 +5,21 @@ public interface IRooms {
 
     boolean IHaveRoom();
     boolean Room_Free(int Rn);
-    boolean Room_Full();
-    boolean Room_Reserved(int roomnumber,LocalDate Day, LocalTime time, int identy, String company, String contact, String contact_phone);
+    boolean Room_Full(int id,String day,String time);
+    void Room_Reserved(int id,int roomnumber,LocalDate Day, LocalTime time);
     void Room_Status();
+
 
 
 
 }
 class Room implements IRooms
 {
+    Database Db=new Database();
     ErrorMessage Errors=new ErrorMessage();
-    private int roomnumber;
-    private int Number_Of_Seats;
     private boolean Error;
 
 
-    @Override
     public boolean IHaveRoom() {
         Error=false;
         //adatbázisbol lekérés
@@ -38,31 +37,30 @@ class Room implements IRooms
     }
 
     @Override
-    public boolean Room_Full() {
-        Error=false;
-        //adatbázisbol lekérés
-        if(true){Error=true;}
-        return Error;
+    public boolean Room_Full(int id,String day,String time) {
+
+        return Db.SQLRooms(id,day,time);
+
     }
 
     @Override
-    public boolean Room_Reserved(int roomnuber,LocalDate Day, LocalTime time, int identy, String company, String contact, String contact_phone) {
+    public void Room_Reserved(int id,int roomnuber,LocalDate Day, LocalTime time) {
         try {
 
             Error = false;
-            if (Room_Full()) {
-                //adatbázisba beszurás
-                Error = true;
+            if (Room_Full(roomnuber,Day.toString(),time.toString())) {
+               Db.SQLRoomsInsert(roomnuber,Day.toString(),time.toString(),id);
+
                 Errors.Error("Terem foglalás","Sikeres terem foglalás");
             } else {
-                Error = false;
+                Errors.Error("Hiba","SQL hiba");
             }
         }
         catch(NumberFormatException e) {
             System.err.println( e.getMessage());
             Errors.Error("Terem Száma Hiba", "Nem megfelelö terem számot adott meg.");
         }
-        return Error;
+
     }
 
 

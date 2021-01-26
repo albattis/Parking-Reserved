@@ -133,7 +133,7 @@ public class User_GUI implements ActionListener {
     return roomnumber;
 }
 
-    public void UserBoard_Selected(){
+    public void Parking(){
 
         Elements.LoginFrame.setSize(600, 500);
         Elements.LoginFrame.setTitle("<-- Parking & Reserved -->");
@@ -169,6 +169,13 @@ public class User_GUI implements ActionListener {
         Elements.LoginPanel.add(Elements.Parking_Date);
         Elements.Parking_Time_Label.setBounds(50,250,180,30);
         Elements.LoginPanel.add(Elements.Parking_Time_Label);
+
+        Elements.RegistrationNumber.setBounds(50,300,180,30);
+        Elements.LoginPanel.add(Elements.RegistrationNumber);
+
+        Elements.RegistrationNumber_Text.setBounds(232,300,100,25);
+        Elements.LoginPanel.add(Elements.RegistrationNumber_Text);
+
         Elements.Time_Text.setBounds(182,250,100,25);
         Elements.LoginPanel.add(Elements.Time_Text);
 
@@ -228,8 +235,8 @@ public class User_GUI implements ActionListener {
             }
             if(id==2)
            {
-               if (DataChecksDate()&&DataChecksTime()&&(Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText()))< Rp.Parking_to_Guest){
-               data=true;}
+               if (DataChecksDate()&&DataChecksTime()&&(Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText()))< Rp.Parking_to_Guest&&Elements.RegistrationNumber_Text!=null){
+               data=true;}else{Error.Error("Rendszámhiba","Adja meg a rendszámot");}
            }
            if(id==3)
            {
@@ -246,7 +253,7 @@ public class User_GUI implements ActionListener {
             Error.Error("Jelszó hiba","Adja meg a jelszavát");
 
         } else {
-            Elements.passwordField.setText("");
+
             if(e.getSource()==Elements.Reserved){
                 Elements.ChoiceFrame.setVisible(false);
                 UserBoard_Rooms();
@@ -272,7 +279,7 @@ public class User_GUI implements ActionListener {
                 if(DataCheck(1))
                 {
 
-                    Rooms.Room_Reserved(roomnumber,date,time,CompUs.UserId,CompUs.CompanyName,CompUs.ContactPerson,CompUs.ContactPhone);
+                    Rooms.Room_Reserved(CompUs.UserId,roomnumber,date,time);
                     Elements.RoomReservedPanel.setVisible(false);
                     UserScreen();
                 }else
@@ -284,10 +291,11 @@ public class User_GUI implements ActionListener {
             if (e.getSource() == Elements.reserved_button){
                      if(DataCheck(2))
                         {
-                            Rp.Reserved_Parkings(date,time,CompUs.UserId);
+                            Rp.Reserved_Parkings(date,time,CompUs.UserId, Elements.RegistrationNumber_Text.getText());
 
                         Elements.LoginPanel.setVisible(false);
                         UserScreen();
+                            Elements.passwordField.setText("");
                         }else
                      {
                          Error.Error("Parkoló foglalás","Hiba történt");
@@ -299,7 +307,7 @@ public class User_GUI implements ActionListener {
 
                         int Pcheck = Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText());
                         Elements.Parking_Return.setText("Szabad Parkolóhelyek száma: " + (Rp.Parking_to_Guest-Pcheck));
-
+                        Elements.passwordField.setText("");
                     }else {
                         System.out.println("nem nem");
                     }
@@ -307,9 +315,10 @@ public class User_GUI implements ActionListener {
 
             if(e.getSource()==Elements.Parking){
                 Elements.ChoiceFrame.setVisible(false);
-                UserBoard_Selected();}
+                Elements.passwordField.setText("");
+                Parking();}
 
         }
-        Elements.passwordField.setText("");
+
     }
 }
