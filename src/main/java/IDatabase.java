@@ -82,7 +82,10 @@ class Database implements IDatabase
        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Parking_reserved", "root", "");
        PreparedStatement statement= (PreparedStatement) connection.prepareStatement(query);
        ResultSet rs= statement.executeQuery();
-      dates=rs.first();
+
+       if (!rs.first()) dates = true;
+       else dates = false;
+       System.out.println(dates);
 
    }
    catch(Exception E){logger.info("Sikertelen SQL");}

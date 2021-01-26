@@ -229,7 +229,7 @@ public class User_GUI implements ActionListener {
     public boolean DataCheck(int id){
         data=false;
             if(id==1) {
-                if (DataChecksDate() && DataChecksTime() && Rooms.Room_Free(roomnumber) && DataChecksRoom()) {
+                if (DataChecksDate() && DataChecksTime()&& DataChecksRoom()) {
                     data = true;
                 }
             }
@@ -249,13 +249,13 @@ public class User_GUI implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
 
-        if (!Objects.equals(CompUs.Password, Elements.passwordField.getText())) {
+    /*    if (!Objects.equals(CompUs.Password, Elements.passwordField.getText())) {
             Error.Error("Jelszó hiba","Adja meg a jelszavát");
 
         } else {
-
+*/
             if(e.getSource()==Elements.Reserved){
-                Elements.ChoiceFrame.setVisible(false);
+            //    Elements.ChoiceFrame.setVisible(false);
                 UserBoard_Rooms();
             }
 
@@ -280,7 +280,7 @@ public class User_GUI implements ActionListener {
                 {
 
                     Rooms.Room_Reserved(CompUs.UserId,roomnumber,date,time);
-                    Elements.RoomReservedPanel.setVisible(false);
+                  //  Elements.RoomReservedPanel.setVisible(false);
                     UserScreen();
                 }else
                 {
@@ -293,9 +293,9 @@ public class User_GUI implements ActionListener {
                         {
                             Rp.Reserved_Parkings(date,time,CompUs.UserId, Elements.RegistrationNumber_Text.getText());
 
-                        Elements.LoginPanel.setVisible(false);
+                    //    Elements.LoginPanel.setVisible(false);
                         UserScreen();
-                            Elements.passwordField.setText("");
+
                         }else
                      {
                          Error.Error("Parkoló foglalás","Hiba történt");
@@ -314,11 +314,11 @@ public class User_GUI implements ActionListener {
                      }
 
             if(e.getSource()==Elements.Parking){
-                Elements.ChoiceFrame.setVisible(false);
+              //  Elements.ChoiceFrame.setVisible(false);
                 Elements.passwordField.setText("");
                 Parking();}
 
         }
 
     }
-}
+
