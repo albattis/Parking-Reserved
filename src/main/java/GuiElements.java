@@ -20,9 +20,11 @@ public class GuiElements {
         JButton Reserved=new JButton("Szoba Foglalás");
         JButton Parking=new JButton("Parkoló foglalás");
         JButton Room_Check=new JButton("Terem ellenörzése");
-        JButton Room_View=new JButton("Terem foglalások megtekintése");
+        JButton Room_View=new JButton("Terem foglalások Megtekintése");
         JButton Parking_view=new JButton("Parkoló foglalások");
         JButton Back=new JButton("Vissza");
+        JButton Room_Table=new JButton("Terem Megjelenitése");
+        JButton Parking_Table=new JButton("Parkoló Megjelenitése");
 
 
         JLabel Parking_Number = new JLabel("Parkólóhelyek száma: ");

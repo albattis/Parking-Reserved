@@ -1,24 +1,26 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Objects;
 
 
 public class User_GUI implements ActionListener {
 
-    private boolean data=false;
-    private LocalTime time;
-    private LocalDate date;
+
+
     private static final CompanyUser CompUs=new CompanyUser();
     private static final ErrorMessage Error=new ErrorMessage();
     private static final Parkings Rp=new Parkings();
-    private static final DateTime DT=new DateTime();
     private static final GuiElements Elements=new GuiElements();
     private static final Room Rooms=new Room();
     private static final Database DB=new Database();
     private static final DatabaseQuerys q=new DatabaseQuerys();
+    private static final Table table=new Table();
+    private static final DataChecks DC=new DataChecks();
     int roomnumber;
 
 
@@ -85,12 +87,13 @@ public class User_GUI implements ActionListener {
         CompUs.ContactPhone=login[4];
         Rp.Parking= DB.SQLConnectionParking(q.ParkingQuery);
         Rp.Parking_to_Guest=DB.SQLConnectionParking(q.ParkingQuery);
+
         UserScreen();
 
     }
 
-    public void UserScreen()
-    {
+
+    public void UserScreen(){
         Elements.ChoiceFrame.setSize(600, 500);
         Elements.ChoiceFrame.setTitle("<-- Parking & Reserved -->");
         Elements.ChoiceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -125,13 +128,7 @@ public class User_GUI implements ActionListener {
         Elements.ChoiceFrame.setVisible(true);
     }
 
-    public int RoomNumberFormat(){
-    try {
 
-        roomnumber = Integer.parseInt(Elements.Number_Text.getText());
-    } catch (NumberFormatException e) {Error.Error("Számhiba","Nem jó számot adott meg.");}
-    return roomnumber;
-}
 
     public void Parking(){
 
@@ -197,76 +194,28 @@ public class User_GUI implements ActionListener {
         Elements.LoginFrame.setVisible(true);
     }
 
-    public boolean DataChecksDate(){
-        date = DT.ReturnDate(Elements.Date_Text.getText());
-        data= date != null;
-        return data;
-    }
-
-    public boolean DataChecksTime(){
-        data=false;
-
-        time = DT.ReturnTime(Elements.Time_Text.getText());
-        if(time !=null)
-        {
-            data=true;
-        }
-        System.out.println(data);
-        return data;
-
-    }
-
-    public boolean DataChecksRoom(){
-        data=false;
-        roomnumber=RoomNumberFormat();
-        if (roomnumber > 0)
-        {    data = true;
-    }
-        return data;
-    }
-
-
-    public boolean DataCheck(int id){
-        data=false;
-            if(id==1) {
-                if (DataChecksDate() && DataChecksTime()&& DataChecksRoom()) {
-                    data = true;
-                }
-            }
-            if(id==2)
-           {
-               if (DataChecksDate()&&DataChecksTime()&&(Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText()))< Rp.Parking_to_Guest&&Elements.RegistrationNumber_Text!=null){
-               data=true;}else{Error.Error("Rendszámhiba","Adja meg a rendszámot");}
-           }
-           if(id==3)
-           {
-               if(DataChecksDate()&&DataChecksTime()){data=true;}
-           }
-       return data;
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
 
-    /*    if (!Objects.equals(CompUs.Password, Elements.passwordField.getText())) {
+       if (!Objects.equals(CompUs.Password, Elements.passwordField.getText())) {
             Error.Error("Jelszó hiba","Adja meg a jelszavát");
 
         } else {
-*/
+
             if(e.getSource()==Elements.Reserved){
             //    Elements.ChoiceFrame.setVisible(false);
                 UserBoard_Rooms();
             }
 
-            if(e.getSource()==Elements.Parking_view)
-            {
-
+            if(e.getSource()==Elements.Parking_view) {
+                table.Table_Gui(CompUs);
             }
 
             if(e.getSource()==Elements.Room_View)
             {
-
+                table.Table_Gui(CompUs);
             }
 
             if(e.getSource()==Elements.Back)
@@ -276,10 +225,10 @@ public class User_GUI implements ActionListener {
 
 
             if (e.getSource() == Elements.Room_Reserved) {
-                if(DataCheck(1))
+                if(DC.DataCheck(1))
                 {
 
-                    Rooms.Room_Reserved(CompUs.UserId,roomnumber,date,time);
+                    Rooms.Room_Reserved(CompUs.UserId,roomnumber,Elements.Date_Text.getText(),Elements.Time_Text.getText());
                   //  Elements.RoomReservedPanel.setVisible(false);
                     UserScreen();
                 }else
@@ -289,9 +238,9 @@ public class User_GUI implements ActionListener {
             }
 
             if (e.getSource() == Elements.reserved_button){
-                     if(DataCheck(2))
+                     if(DC.DataCheck(2))
                         {
-                            Rp.Reserved_Parkings(date,time,CompUs.UserId, Elements.RegistrationNumber_Text.getText());
+                            Rp.Reserved_Parkings(Elements.Date_Text.getText(),Elements.Time_Text.getText(),CompUs.UserId, Elements.RegistrationNumber_Text.getText());
 
                     //    Elements.LoginPanel.setVisible(false);
                         UserScreen();
@@ -303,7 +252,7 @@ public class User_GUI implements ActionListener {
                     }
 
             if (e.getSource() == Elements.Parking_Check) {
-                    if(DataCheck(3)) {
+                    if(DC.DataCheck(3)) {
 
                         int Pcheck = Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText());
                         Elements.Parking_Return.setText("Szabad Parkolóhelyek száma: " + (Rp.Parking_to_Guest-Pcheck));
@@ -319,6 +268,7 @@ public class User_GUI implements ActionListener {
                 Parking();}
 
         }
+    }
 
     }
 

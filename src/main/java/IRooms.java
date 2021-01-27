@@ -4,7 +4,7 @@ import java.time.LocalTime;
 public interface IRooms {
 
 
-    void Room_Reserved(int id,int roomnumber,LocalDate Day, LocalTime time);
+    void Room_Reserved(int id,int roomnumber,String Day, String time);
 
 }
 class Room implements IRooms
@@ -20,7 +20,7 @@ class Room implements IRooms
     }
 
     @Override
-    public void Room_Reserved(int id,int roomnuber,LocalDate Day, LocalTime time) {
+    public void Room_Reserved(int id,int roomnuber,String Day, String time) {
         try {
 
             if (Room_Full(roomnuber,Day.toString(),time.toString())) {

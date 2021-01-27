@@ -1,7 +1,5 @@
-import javax.lang.model.util.Elements;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+
 
 public interface IParking {
 
@@ -30,7 +28,7 @@ class Parkings implements IParking {
     }
 
 
-    public void Reserved_Parkings(LocalDate Day, LocalTime time, int identy,String registr) {
+    public void Reserved_Parkings(String Day, String time, int identy,String registr) {
 
         if (Parking_Status(Day.toString(),time.toString())<Parking_to_Guest) {
             String query="insert into parking_reserved(`userid`,`date`,`time`,`Registration_number`)values("+identy+",\""+Day+"\",\""+time+"\",\""+registr+"\");";

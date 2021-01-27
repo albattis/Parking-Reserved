@@ -18,29 +18,47 @@ class Database implements IDatabase
         catch(ClassNotFoundException e){logger.info("Hiba az SQL Driverrel.");}
     }
 
-   public String[] SQLConnection(String sql){
-
-       String[] k=new String[5];
+   public String[][] SqlTable(String sql){
+       int szamolo=0;
+       String[][] k=new String[50][3];
        try{ JDBCConnect();
         Connection connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/parking_reserved","root","");
         PreparedStatement statemant= (PreparedStatement) connection.prepareStatement(sql);
         ResultSet rs=statemant.executeQuery();
 
-        while(rs.next())
-        {
-             k[0]=rs.getString(1);
-             k[1]=rs.getString(2);
-             k[2]=rs.getString(3);
-            k[3]=rs.getString(4);
-            k[4]=rs.getString(5);
-        }
-        rs.close();
-        return k;
+        while(rs.next()) {
+            k[szamolo][0] = rs.getString(1);
+            k[szamolo][1] = rs.getString(2);
+            k[szamolo][2] = rs.getString(3);
 
+
+
+        }
         }catch (SQLException e){logger.info("");}
        return k;
     }
+    public String[] SQLConnection(String sql){
 
+        String[] k=new String[5];
+        try{ JDBCConnect();
+            Connection connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/parking_reserved","root","");
+            PreparedStatement statemant= (PreparedStatement) connection.prepareStatement(sql);
+            ResultSet rs=statemant.executeQuery();
+
+            while(rs.next())
+            {
+                k[0]=rs.getString(1);
+                k[1]=rs.getString(2);
+                k[2]=rs.getString(3);
+                k[3]=rs.getString(4);
+                k[4]=rs.getString(5);
+            }
+            rs.close();
+            return k;
+
+        }catch (SQLException e){logger.info("");}
+        return k;
+    }
    public int SQLConnectionParking(String sql) {
             int result = 0;
         try {
