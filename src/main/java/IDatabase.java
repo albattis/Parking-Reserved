@@ -2,14 +2,8 @@ import com.mysql.jdbc.PreparedStatement;
 import java.sql.*;
 import java.util.logging.Logger;
 
-public interface IDatabase {
 
-     void JDBCConnect();
-
-
-}
-
-class Database implements IDatabase
+class Database
 {
    private final Logger logger=Logger.getLogger(Database.class.getName());
 
@@ -20,24 +14,25 @@ class Database implements IDatabase
 
    public String[][] SqlTable(String sql){
        int szamolo=0;
-       String[][] k=new String[50][3];
+       String[][] k=new String[20][3];
        try{ JDBCConnect();
         Connection connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/parking_reserved","root","");
         PreparedStatement statemant= (PreparedStatement) connection.prepareStatement(sql);
         ResultSet rs=statemant.executeQuery();
 
         while(rs.next()) {
-            k[szamolo][0] = rs.getString(1);
-            k[szamolo][1] = rs.getString(2);
-            k[szamolo][2] = rs.getString(3);
+            k[szamolo][0] = rs.getString(2);
+            k[szamolo][1] = rs.getString(1);
+            k[szamolo][2] = rs.getString(4);
+            System.out.println(k[szamolo][0]+k[szamolo][1]);
 
-
-
+            szamolo++;
         }
         }catch (SQLException e){logger.info("");}
        return k;
     }
-    public String[] SQLConnection(String sql){
+
+   public String[] SQLConnection(String sql){
 
         String[] k=new String[5];
         try{ JDBCConnect();
@@ -59,6 +54,7 @@ class Database implements IDatabase
         }catch (SQLException e){logger.info("");}
         return k;
     }
+
    public int SQLConnectionParking(String sql) {
             int result = 0;
         try {

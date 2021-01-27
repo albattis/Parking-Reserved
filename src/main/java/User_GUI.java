@@ -1,12 +1,6 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Calendar;
-import java.util.Objects;
-
 
 public class User_GUI implements ActionListener {
 
@@ -19,12 +13,8 @@ public class User_GUI implements ActionListener {
     private static final Room Rooms=new Room();
     private static final Database DB=new Database();
     private static final DatabaseQuerys q=new DatabaseQuerys();
-    private static final Table table=new Table();
+
     private static final DataChecks DC=new DataChecks();
-    int roomnumber;
-
-
-
 
     public void UserBoard_Rooms()
     {
@@ -43,10 +33,6 @@ public class User_GUI implements ActionListener {
 
         Elements.Number_Text.setBounds(400,150,100,25);
         Elements.RoomReservedPanel.add(Elements.Number_Text);
-
-        Elements.passwordField.setBounds(200, 350, 200, 30);
-        Elements.passwordField.setText("");
-        Elements.RoomReservedPanel.add(Elements.passwordField);
 
         Elements.Parking_Date.setBounds(250,200,150,30);
         Elements.RoomReservedPanel.add(Elements.Parking_Date);
@@ -78,8 +64,7 @@ public class User_GUI implements ActionListener {
         Elements.RoomReservedFrame.setVisible(true);
     }
 
-    public void UserBoard(String[] login,String pass)
-    {//Bejelentkezés utáni képernyő
+    public void UserBoard(String[] login,String pass){//Bejelentkezés utáni képernyő
         CompUs.UserId=Integer.parseInt(login[0]);
         CompUs.CompanyName=login[1];
         CompUs.Password=pass;
@@ -92,7 +77,6 @@ public class User_GUI implements ActionListener {
 
     }
 
-
     public void UserScreen(){
         Elements.ChoiceFrame.setSize(600, 500);
         Elements.ChoiceFrame.setTitle("<-- Parking & Reserved -->");
@@ -103,13 +87,13 @@ public class User_GUI implements ActionListener {
         Elements.Title.setBounds(150,20,400,30);
         Elements.ChoicePanel.add(Elements.Title);
 
-        Elements.Room_View.setBounds(25,80,250,30);
-        Elements.ChoicePanel.add(Elements.Room_View);
-        Elements.Room_View.addActionListener(new User_GUI());
+        Elements.Reserved_View_Room.setBounds(25,80,250,30);
+        Elements.ChoicePanel.add(Elements.Reserved_View_Room);
+        Elements.Reserved_View_Room.addActionListener(new User_GUI());
 
-        Elements.Parking_view.setBounds(300,80,275,30);
-        Elements.ChoicePanel.add(Elements.Parking_view);
-        Elements.Parking_view.addActionListener(new User_GUI());
+        Elements.Reserved_View_Parking.setBounds(300,80,250,30);
+        Elements.ChoicePanel.add(Elements.Reserved_View_Parking);
+        Elements.Reserved_View_Parking.addActionListener(new User_GUI());
 
         Elements.Reserved.setBounds(25,125,250,200);
         Elements.ChoicePanel.add(Elements.Reserved);
@@ -119,16 +103,8 @@ public class User_GUI implements ActionListener {
         Elements.ChoicePanel.add(Elements.Parking);
         Elements.Parking.addActionListener(new User_GUI());
 
-        Elements.passwordField.setBounds(200, 350, 200, 30);
-        Elements.ChoicePanel.add(Elements.passwordField);
-
-        Elements.PasswordText.setBounds(50,350,200,30);
-        Elements.ChoicePanel.add(Elements.PasswordText);
-
         Elements.ChoiceFrame.setVisible(true);
     }
-
-
 
     public void Parking(){
 
@@ -142,12 +118,6 @@ public class User_GUI implements ActionListener {
         Elements.Title.setBounds(150 , 20, 400, 30);
         Elements.Title.setText("Üdözöljük a Parking@Reserved Redszerében.\n"+CompUs.CompanyName);
         Elements.LoginPanel.add(Elements.Title);
-        Elements.PasswordText.setBounds(50,350,200,30);
-        Elements.LoginPanel.add(Elements.PasswordText);
-
-        Elements.passwordField.setBounds(200, 350, 200, 30);
-        Elements.LoginPanel.add(Elements.passwordField);
-
 
         Elements.Parking_Number.setBounds(50,100,180,30);
         Elements.LoginPanel.add(Elements.Parking_Number);
@@ -194,80 +164,72 @@ public class User_GUI implements ActionListener {
         Elements.LoginFrame.setVisible(true);
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == Elements.reserved_button){
+            if(DC.DataCheck(2,Elements.Time_Text.getText(),Elements.Date_Text.getText(),Elements.Number_Text.getText()))
+            {
+                Rp.Reserved_Parkings(Elements.Date_Text.getText(),Elements.Time_Text.getText(),CompUs.UserId, Elements.RegistrationNumber_Text.getText());
 
+                //    Elements.LoginPanel.setVisible(false);
+                UserScreen();
 
-       if (!Objects.equals(CompUs.Password, Elements.passwordField.getText())) {
-            Error.Error("Jelszó hiba","Adja meg a jelszavát");
+            }else
+            {
+                Error.Error("Parkoló foglalás","Hiba történt");
+            }
+        }
 
-        } else {
+        if (e.getSource() == Elements.Room_Reserved) {
+            if(DC.DataCheck(1,Elements.Time_Text.getText(),Elements.Date_Text.getText(),Elements.Number_Text.getText()))
+            {
 
-            if(e.getSource()==Elements.Reserved){
-            //    Elements.ChoiceFrame.setVisible(false);
+                Rooms.Room_Reserved(CompUs.UserId,DC.RoomNumberFormat(Elements.Number_Text.getText()),Elements.Date_Text.getText(),Elements.Time_Text.getText());
+
+                UserScreen();
+            }else
+            {
+                Error.Error("Terem foglalás","Hiba történt.");
+            }
+        }
+
+        if (e.getSource() == Elements.Parking_Check) {
+            if(DC.DataCheck(3,Elements.Time_Text.getText(),Elements.Date_Text.getText(),Elements.Number_Text.getText())) {
+
+                int Pcheck = Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText());
+                Elements.Parking_Return.setText("Szabad Parkolóhelyek száma: " + (Rp.Parking_to_Guest-Pcheck));
+                Elements.passwordField.setText("");
+            }else {
+
+            }
+        }
+
+        if(e.getSource()==Elements.Back){
+            UserScreen();
+        }
+
+        if(e.getSource()==Elements.Reserved){
                 UserBoard_Rooms();
             }
 
-            if(e.getSource()==Elements.Parking_view) {
-                table.Table_Gui(CompUs);
+        if(e.getSource()==Elements.Reserved_View_Room) {
+                Table table=new Table();
+                String query="SELECT * from rooms_reserved where user_id="+CompUs.UserId+" order by rooms_reserved.date desc limit 20;";
+                table.Table_Gui_Room(query,table.Columns_room);
             }
 
-            if(e.getSource()==Elements.Room_View)
-            {
-                table.Table_Gui(CompUs);
+        if(e.getSource()==Elements.Reserved_View_Parking){
+                Table table=new Table();
+                String query="SELECT * from parking_reserved where userid="+CompUs.UserId+" order by parking_reserved.date desc limit 20;";
+                table.Table_Gui_Parking(query,table.Columns_parking);
             }
 
-            if(e.getSource()==Elements.Back)
-            {
-                UserScreen();
-            }
-
-
-            if (e.getSource() == Elements.Room_Reserved) {
-                if(DC.DataCheck(1))
-                {
-
-                    Rooms.Room_Reserved(CompUs.UserId,roomnumber,Elements.Date_Text.getText(),Elements.Time_Text.getText());
-                  //  Elements.RoomReservedPanel.setVisible(false);
-                    UserScreen();
-                }else
-                {
-                    Error.Error("Terem foglalás","Hiba történt.");
-                }
-            }
-
-            if (e.getSource() == Elements.reserved_button){
-                     if(DC.DataCheck(2))
-                        {
-                            Rp.Reserved_Parkings(Elements.Date_Text.getText(),Elements.Time_Text.getText(),CompUs.UserId, Elements.RegistrationNumber_Text.getText());
-
-                    //    Elements.LoginPanel.setVisible(false);
-                        UserScreen();
-
-                        }else
-                     {
-                         Error.Error("Parkoló foglalás","Hiba történt");
-                     }
-                    }
-
-            if (e.getSource() == Elements.Parking_Check) {
-                    if(DC.DataCheck(3)) {
-
-                        int Pcheck = Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText());
-                        Elements.Parking_Return.setText("Szabad Parkolóhelyek száma: " + (Rp.Parking_to_Guest-Pcheck));
-                        Elements.passwordField.setText("");
-                    }else {
-                        System.out.println("nem nem");
-                    }
-                     }
-
-            if(e.getSource()==Elements.Parking){
+        if(e.getSource()==Elements.Parking){
               //  Elements.ChoiceFrame.setVisible(false);
                 Elements.passwordField.setText("");
                 Parking();}
 
-        }
+
     }
 
     }

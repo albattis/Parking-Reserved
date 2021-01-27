@@ -7,68 +7,65 @@ public class DataChecks {
     private static final GuiElements Elements=new GuiElements();
     private final ErrorMessage Error=new ErrorMessage();
     private final Parkings Rp=new Parkings();
+    private final Room room=new Room();
 
-    private LocalTime time;
-    private LocalDate date;
+    private String time;
+    private String date;
     private int roomnumber;
 
     private boolean data=false;
 
     private boolean DataChecksDate(){
-        date = DT.ReturnDate(Elements.Date_Text.getText());
+
         data= date != null;
+        System.out.println(data);
         return data;
     }
 
-    public int RoomNumberFormat(){
+    public int RoomNumberFormat(String numb){
         try {
+            roomnumber=Integer.parseInt(numb);
 
-            roomnumber = Integer.parseInt(Elements.Number_Text.getText());
         } catch (NumberFormatException e) {Error.Error("Számhiba","Nem jó számot adott meg.");}
         return roomnumber;
     }
 
     private boolean DataChecksTime(){
-        data=false;
 
-        time = DT.ReturnTime(Elements.Time_Text.getText());
-        if(time !=null)
-        {
-            data=true;
-        }
+        data= time != null;
         System.out.println(data);
         return data;
 
     }
 
-    private boolean DataChecksRoom(){
+    private boolean DataChecksRoom(String num){
         data=false;
-        roomnumber=RoomNumberFormat();
-        if (roomnumber > 0)
+        roomnumber=RoomNumberFormat(num);
+
+        if (roomnumber > 0&&room.Room_Full(roomnumber,date,time))
         {    data = true;
+            System.out.println("nincs tele");
         }
         return data;
     }
 
-public boolean View_Room_Check()
-{
-    data= (DataChecksDate() && DataChecksTime());
-    return data;
-}
-    public boolean DataCheck(int id){
+    public boolean DataCheck(int id,String times,String dates,String number){
         data=false;
+        time=times;
+        date=dates;
         if(id==1) {
-            if (DataChecksDate() && DataChecksTime()&& DataChecksRoom()) {
+
+            if (DataChecksDate() && DataChecksTime()&& DataChecksRoom(number)) {
                 data = true;
             }
         }
-        if(id==2)
-        {
-            if (DataChecksDate()&&DataChecksTime()&&(Rp.Parking_Status(Elements.Date_Text.getText(),Elements.Time_Text.getText()))< Rp.Parking_to_Guest&&Elements.RegistrationNumber_Text!=null){
+        if(id==2) {
+
+            if (DataChecksDate()&&DataChecksTime()){
                 data=true;}else{Error.Error("Rendszámhiba","Adja meg a rendszámot");}
         }
-        if(id==3)
-        {
+        if(id==3) {
+
             if(DataChecksDate()&&DataChecksTime()){data=true;}
         }
         return data;
